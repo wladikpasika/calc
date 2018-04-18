@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>calc</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style media="screen">
+    .calc-result {
+      padding: 20px;
+      background: #fdf690;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      }
+    .calc-result hr {
+      color: #3c464f;
+      background-color: #ccc;
+      height: 1px;
+      }
+    .calc-result .head-sub {
+      margin-bottom: 10px;
+      }
+    .calc-result #result {
+      font-size: 18pt;
+      }
+	i.tooltip1 {
+		padding: 1px 5px;
+		color: #fff;
+		background: #ccc;
+		cursor: pointer;
+		border-radius: 10px;
+		font-size: 12px;
+		font-style: normal;
+	}
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+      		<div class="row">
+      			<div class="col-sm-12">
+      					<form id="calculate">
+
+      	    <div class="row">
+
+      			<div class="col-sm-4">
+
+      				<!-- ************************ Материал ************************ -->
+      				<div class="form-group">
+
+      					<div class="head-sub">Материал</div>
+
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="material" id="material1" :value="0" v-model="material" > Металл черный
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="material" id="material2" :value="1" v-model="material"> Металл нержавеющий
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="material" id="material3" :value="2" v-model="material"> Металл цветной
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="material" id="material4" :value="3" v-model="material"> Кирпич
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="material" id="material5" :value="4" v-model="material"> Гранит
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="material" id="material6" :value="5" v-model="material"> Мрамор
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="material" id="material7" :value="6" v-model="material"> Бетон
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="material" id="material8" :value="7" v-model="material"> Дерево
+      						</label>
+      					</div>
+      				</div>
+
+      			</div>
+      			<div class="col-sm-4">
+
+      				<!-- ************************ Поверхность ************************ -->
+      				<div id="poverhnost" v-show = "showSurfaceField">
+
+      					<div id="material1-poverh">
+
+      						<div class="head-sub">Поверхность</div>
+      						<div class="radio">
+      							<label>
+      								<input type="radio" name="vid-pokr" id="r-vid1-pokr1" data-id="0" :value="0" v-model="surface"> Ровная
+      							</label>
+      						</div>
+      						<div class="radio">
+      							<label>
+      								<input type="radio" name="vid-pokr" id="r-vid2-pokr1" data-id="1" :value="1" v-model="surface"> Ребристая
+      							</label>
+      						</div>
+      						<div class="radio" v-show = "material<=2||material>=7">
+      							<label>
+      								<input type="radio" name="vid-pokr" id="r-vid3-pokr1" data-id="2" :value="2" v-model="surface"> {{material==7?'Профиль':'Труба/профиль'}}
+      							</label>
+      						</div>
+      					</div>
+      				</div>
+
+      				<!-- ************************ Тип покрытия ************************ -->
+      				<div id="pokr">
+
+      					<div id="material1-pokr" v-show = "showPainting">
+      						<div class="head-sub">Покрытие <i class="tooltip1" data-toggle="tooltip" title="" data-original-title="Старое покрытие или загрязнение">?</i></div>
+      						<div class="radio">
+      							<label>
+      								<input type="radio" name="material-pokr" id="r-material1-pokr1" checked="" data-id="0" :value="0" v-model="coating"> Без покрытия
+      							</label>
+      						</div>
+      						<div class="radio">
+      							<label>
+      								<input type="radio" name="material-pokr" id="r-material1-pokr2" data-id="1" :value="1" v-model="coating"> {{material>2?'Краска':'Краска акриловая'}}
+      							</label>
+      						</div>
+      						<div class="radio" v-if="material<=3||material==6">
+      							<label>
+      								<input type="radio" name="material-pokr" id="r-material1-pokr3" data-id="2" :value="2" v-model="coating" > {{material==3?'Побелка':material==6?'Штукатурка':'Краска порошковая'}}
+      							</label>
+      						</div>
+      						<div class="radio" v-if="material<=3">
+      							<label>
+      								<input type="radio" name="material-pokr" id="r-material1-pokr4" data-id="3" :value="3" v-model="coating" > {{material==3?'Цемент/бетон':'Смола и антикоррозийное покрытие'}}
+      							</label>
+      						</div>
+							<div class="radio" v-if="material==3">
+								<label>
+									<input type="radio" name="material-pokr" id="r-material4-pokr5" data-id="4" :value="4" v-model="coating"> Штукатурка
+								</label>
+							</div>
+      					</div>
+
+
+      				</div>
+
+					<div class = "other-parameters" v-show="showSurfaceAreaField">
+      				<!-- Площадь поверхности -->
+      				<div id="plo-f" class="form-group">
+      					<div class="head-sub">Площадь поверхности, м<sup>2</sup></div>
+      					<input type="number" class="form-control" name="p-plo" id="plo" v-model="surfaceArea" min="0">
+      				</div>
+
+        				<!-- Выезд бригады -->
+
+      				<div id="brigada" class="form-group">
+      					<div class="head-sub">Выезд бригады <i class="tooltip1" data-toggle="tooltip" title="" data-original-title="Если без выезда бригады, то вы привозите деталь на обработку к нам">?</i></div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="brigada" id="brigada1" :value="0" checked="" v-model="brigadeDeparture"> Без выезда
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="brigada" id="brigada2" :value="1" v-model="brigadeDeparture"> В пределах МКАД
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="brigada" id="brigada3" :value="2" v-model="brigadeDeparture"> За МКАД <i class="tooltip1" data-toggle="tooltip" title="" data-original-title="Расчет исходя из прокладки маршрута по карте">?</i>
+      						</label>
+      					</div>
+
+      					<!-- КМ от МКАД -->
+      					<div id="brigada-mkad-km" class="form-group" v-show="showOutsideMKADField&&brigadeDeparture==2">
+      						<div class="head-sub">Расстояние, км </div>
+      						<input type="number" class="form-control" id="brigada_mkad_km" v-model="outsideMKAD" min="0">
+      					</div>
+
+        					<!-- Покраска -->
+      					<div class="head-sub">Покраска распылителем материалами Заказчика</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="pokraska" id="pokraska0" :value="null" checked="" v-model="painting"> Без покраски
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="pokraska" id="pokraska1" :value="1" v-model="painting"> 1 слой
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="pokraska" id="pokraska2" :value="2" v-model="painting"> 2 слоя
+      						</label>
+      					</div>
+      					<div class="radio">
+      						<label>
+      							<input type="radio" name="pokraska" id="pokraska3" :value="3" v-model="painting"> 3 слоя
+      						</label>
+      					</div>
+
+      	  				<!-- Уборка -->
+      					<div id="uborka" class="form-group">
+      						<div class="head-sub">Черновая уборка отработанного абразива в емкость, предоставленную Заказчиком</div>
+      						<div class="radio">
+      							<label>
+      								<input type="radio" name="uborka" id="uborka0" :value="false" checked="" v-model = "cleaning"> Без уборки
+      							</label>
+      						</div>
+      						<div class="radio">
+      							<label>
+      								<input type="radio" name="uborka" id="uborka1" :value="true" v-model = "cleaning"> С уборкой
+      							</label>
+      						</div>
+      					</div>
+					</div>
+				</div>
+
+      		</div>
+
+      	<div class="col-sm-4">
+      				<div class="calc-result">
+      					<!-- Расчет -->
+      					<div class="head-sub">Расчет стоимости</div>
+      					<p>
+                  <span id="result">
+                    <span v-if="total">{{ total }} руб.</span>
+                    <span v-else>Заполните все поля</span>
+                  </span>
+                </p>
+      				</div>
+
+      				<!-- <button type="button" class="btn btn-success">Расчитать</button>
+      				<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModal2">Отправить заявку</button> -->
+      				<hr>
+      				<p>* При заказе на пескоструйную очистку в Москве в пределах МКАД свыше 50 000 руб. выезд бригады - бесплатно, за пределами МКАД - 100 руб./км.;</p>
+      				<p>** Минимальная стоимость выезда бригады - 15 000 рублей;</p>
+      				<p>*** На очистку объектов от 250 м.кв. расчет стоимости производится индивидуально.</p>
+      			</div>
+
+      </div>
+      	</form>
+      			</div>
+      		</div>
+      	</div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.js"></script>
+    <script src="script.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script>$(function () {$('[data-toggle="tooltip"]').tooltip()})</script>
+  </body>
+</html>
